@@ -60,11 +60,9 @@ me.priority = 'low'
 def opme(m5, input):
     admin = 'ChanServ'
     nick = input.nick
-    channel = input.channel
-    if input.sender.startswith('#'): 
-        return
+    channel = input.sender
     if input.admin:
-        m5.msg( admin, 'op ' + channel + nick)
+        m5.write(['MODE', channel, "+o", nick])
 opme.commands = ["opme"]
 opme.priority = 'low'
 
