@@ -3,9 +3,6 @@
 bot.py - m5 IRC Bot
 Copyright 2008, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
-
-http://inamidst.com/m5/
-
 """
 
 import sys, os, re, threading, imp

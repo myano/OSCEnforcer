@@ -116,11 +116,10 @@ def main(argv=None):
       module.filename = config_name
 
       if not hasattr(module, 'prefix'): 
-         module.prefix = r'\.'
+         module.prefix = r'\!'
 
       if not hasattr(module, 'name'): 
-         module.name = 'm5 Multitronic' #originally moduel.name = 'Phenny Palmersbot, http://inamidst.com/m5/'
-         #removed the URL to make the bot seem like a person. :)
+         module.name = 'm5 Multitronic'
 
       if not hasattr(module, 'port'): 
          module.port = 6667
