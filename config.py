@@ -1,6 +1,6 @@
 nick = 'm5'
 host = 'irc.freenode.net'
-channels = ['#osc_test']
+channels = ['#osc_test', '#m5_test']
 owner = 'al3k'
 
 # This isn't implemented yet:
@@ -9,7 +9,7 @@ owner = 'al3k'
 # These are people who will be able to use admin.py's functions...
 admins = [owner]
 # But admin.py is disabled by default, as follows:
-exclude = ['admin']
+exclude = []
 
 # If you want to enumerate a list of modules rather than disabling
 # some, use "enable = ['example']", which takes precedent over exclude
