@@ -3,6 +3,8 @@
 admin.py - Phenny Admin Module
 Copyright 2008-9, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
+
+beefed up by Alek Rollyson. added funtions for op, deop, voice, devoice
 """
 
 def join(m5, input): 
@@ -57,14 +59,77 @@ def me(m5, input):
 me.rule = (['me'], r'(#?\S+) (.*)')
 me.priority = 'low'
 
-def opme(m5, input):
-    admin = 'ChanServ'
-    nick = input.nick
-    channel = input.sender
-    if input.admin:
+def op(m5, input):
+    """
+    Command to op users in a room. If no nick is given,
+    m5 will op the nick who sent the command
+    """
+    if not input.admin:
+        return
+    nick = input.group(2)
+    if not nick:
+        nick = input.nick
+        channel = input.sender
         m5.write(['MODE', channel, "+o", nick])
-opme.commands = ["opme"]
-opme.priority = 'low'
+    else:
+        channel = input.sender
+        m5.write(['MODE', channel, "+o", nick])
+op.rule = (['op'], r'(\S+)?')
+op.priority = 'low'
+
+def deop(m5, input):
+    """
+    Command to deop users in a room. If no nick is given,
+    m5 will deop the nick who sent the command
+    """
+    if not input.admin:
+        return
+    nick = input.group(2)
+    if not nick:
+        nick = input.nick
+        channel = input.sender
+        m5.write(['MODE', channel, "-o", nick])
+    else:
+        channel = input.sender
+        m5.write(['MODE', channel, "-o", nick])
+deop.rule = (['deop'], r'(\S+)?')
+deop.priority = 'low'
+
+def voice(m5, input):
+    """
+    Command to voice users in a room. If no nick is given,
+    m5 will op the nick who sent the command
+    """
+    if not input.admin:
+        return
+    nick = input.group(2)
+    if not nick:
+        nick = input.nick
+        channel = input.sender
+        m5.write(['MODE', channel, "+v", nick])
+    else:
+        channel = input.sender
+        m5.write(['MODE', channel, "+v", nick])
+voice.rule = (['voice'], r'(\S+)?')
+voice.priority = 'low'
+
+def devoice(m5, input):
+    """
+    Command to devoice users in a room. If no nick is given,
+    m5 will op the nick who sent the command
+    """
+    if not input.admin:
+        return
+    nick = input.group(2)
+    if not nick:
+        nick = input.nick
+        channel = input.sender
+        m5.write(['MODE', channel, "-v", nick])
+    else:
+        channel = input.sender
+        m5.write(['MODE', channel, "-v", nick])
+devoice.rule = (['devoice'], r'(\S+)?')
+devoice.priority = 'low'
 
 if __name__ == '__main__': 
    print __doc__.strip()
