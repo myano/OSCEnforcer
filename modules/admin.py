@@ -71,7 +71,7 @@ def op(m5, input):
     Command to op users in a room. If no nick is given,
     m5 will op the nick who sent the command
     """
-    if not input.admin:
+    if not input.admin or not input.senderstartswith('#'):
         return
     nick = input.group(2)
     verify = auth_check(input.nick)
@@ -91,7 +91,7 @@ def deop(m5, input):
     Command to deop users in a room. If no nick is given,
     m5 will deop the nick who sent the command
     """
-    if not input.admin:
+    if not input.admin or not input.sender.startswith('#'):
         return
     nick = input.group(2)
     verify = auth_check(input.nick)
@@ -111,7 +111,7 @@ def voice(m5, input):
     Command to voice users in a room. If no nick is given,
     m5 will voice the nick who sent the command
     """
-    if not input.admin:
+    if not input.admin or not input.sender.startswith('#'):
         return
     nick = input.group(2)
     verify = auth_check(input.nick)
@@ -131,7 +131,7 @@ def devoice(m5, input):
     Command to devoice users in a room. If no nick is given,
     m5 will devoice the nick who sent the command
     """
-    if not input.admin:
+    if not input.admin or not input.sender.startswith('#'):
         return
     nick = input.group(2)
     verify = auth_check(input.nick)
@@ -171,6 +171,9 @@ def auth_verify(m5, input):
     nick = input.group(1)
     level = input.group(3)
     if input.nick != 'NickServ':
+        return
+    elif nick == m5.config.nick:
+        m5.say("nah, i'm good")
         return
     elif level == '3':
         if nick in auth_list:
