@@ -153,7 +153,7 @@ def auth_request(m5, input):
     pattern = '(' + '|'.join([re.escape(x) for x in admins]) + ')'
     matches = re.findall(pattern, input)
     for x in matches:
-        m5.msg('NickServ', 'ACC' + x)
+        m5.msg('NickServ', 'ACC ' + x)
 auth_request.rule = r'.*'
 auth_request.priority = 'high'
 
@@ -163,24 +163,22 @@ def auth_verify(m5, input):
     responses.  This verifies with NickServ that nicks in the room
     are verified so that they cannot be spoofed.
     """
-    print input
     global auth_list
     nick = input.group(1)
     level = input.group(3)
     if input.nick != 'NickServ':
         return
-    elif level < 3:
-        if nick not in auth_list:
-            return
-        else:
-            auth_list.remove(nick)
-    elif level == 3:
+    elif level == '3':
         if nick in auth_list:
             return
         else:
             auth_list.append(nick)
     else:
-        return
+        if nick not in auth_list:
+            return
+        else:
+            auth_list.remove(nick)
+    print auth_list
 auth_verify.event = 'NOTICE'
 auth_verify.rule = r'(\S+) (ACC) ([0-3])'
 auth_verify.priority = 'high'
