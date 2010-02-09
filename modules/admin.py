@@ -6,8 +6,10 @@ Licensed under the Eiffel Forum License 2.
 
 beefed up by Alek Rollyson. added functions for op, deop, voice, devoice
 """
+import re
+
 auth_list = []
-admins = m5.config.admins
+admins = []
 
 def join(m5, input): 
    """Join the specified channel. This is an admin-only command."""
@@ -69,13 +71,15 @@ def op(m5, input):
     if not input.admin:
         return
     nick = input.group(2)
-    if not nick:
-        nick = input.nick
-        channel = input.sender
-        m5.write(['MODE', channel, "+o", nick])
-    else:
-        channel = input.sender
-        m5.write(['MODE', channel, "+o", nick])
+    verify = auth_check(input.nick)
+    if verify:
+        if not nick:
+            nick = input.nick
+            channel = input.sender
+            m5.write(['MODE', channel, "+o", nick])
+        else:
+            channel = input.sender
+            m5.write(['MODE', channel, "+o", nick])
 op.rule = (['op'], r'(\S+)?')
 op.priority = 'low'
 
@@ -87,13 +91,15 @@ def deop(m5, input):
     if not input.admin:
         return
     nick = input.group(2)
-    if not nick:
-        nick = input.nick
-        channel = input.sender
-        m5.write(['MODE', channel, "-o", nick])
-    else:
-        channel = input.sender
-        m5.write(['MODE', channel, "-o", nick])
+    verify = auth_check(input.nick)
+    if verify:
+        if not nick:
+            nick = input.nick
+            channel = input.sender
+            m5.write(['MODE', channel, "-o", nick])
+        else:
+            channel = input.sender
+            m5.write(['MODE', channel, "-o", nick])
 deop.rule = (['deop'], r'(\S+)?')
 deop.priority = 'low'
 
@@ -105,13 +111,15 @@ def voice(m5, input):
     if not input.admin:
         return
     nick = input.group(2)
-    if not nick:
-        nick = input.nick
-        channel = input.sender
-        m5.write(['MODE', channel, "+v", nick])
-    else:
-        channel = input.sender
-        m5.write(['MODE', channel, "+v", nick])
+    verify = auth_check(input.nick)
+    if verify:
+        if not nick:
+            nick = input.nick
+            channel = input.sender
+            m5.write(['MODE', channel, "+v", nick])
+        else:
+            channel = input.sender
+            m5.write(['MODE', channel, "+v", nick])
 voice.rule = (['voice'], r'(\S+)?')
 voice.priority = 'low'
 
@@ -123,13 +131,15 @@ def devoice(m5, input):
     if not input.admin:
         return
     nick = input.group(2)
-    if not nick:
-        nick = input.nick
-        channel = input.sender
-        m5.write(['MODE', channel, "-v", nick])
-    else:
-        channel = input.sender
-        m5.write(['MODE', channel, "-v", nick])
+    verify = auth_check(input.nick)
+    if verify:
+        if not nick:
+            nick = input.nick
+            channel = input.sender
+            m5.write(['MODE', channel, "-v", nick])
+        else:
+            channel = input.sender
+            m5.write(['MODE', channel, "-v", nick])
 devoice.rule = (['devoice'], r'(\S+)?')
 devoice.priority = 'low'
 
@@ -139,10 +149,11 @@ def auth_request(m5, input):
     admin list.  If one is found, it will send an ACC request
     to NickServ.  May only work with Freenode.
     """
+    admins = m5.config.admins
     pattern = '(' + '|'.join([re.escape(x) for x in admins]) + ')'
     matches = re.findall(pattern, input)
-    for x in len(matches):
-        m5.msg('NickServ', 'ACC' % matches(x))
+    for x in matches:
+        m5.msg('NickServ', 'ACC' % x)
 auth_request.rule = r'.*'
 auth_request.priority = 'high'
 
@@ -153,20 +164,29 @@ def auth_verify(m5, input):
     are verified so that they cannot be spoofed.
     """
     global auth_list
-    nick = input.group(3)
-    level = input.group(1)
-    if input.admin not 'NickServ'
+    nick = input.group(1)
+    level = input.group(3)
+    if input.nick != 'NickServ':
         return
-    elif input.group(3) == 0
-        if nick not in auth_list
+    elif level < 3:
+        if nick not in auth_list:
             return
-        else
-            
-
-auth_verify.rule = (r'(\S+) (ACC) ([0-3])')
+        else:
+            auth_list.remove(nick)
+    elif level == 3:
+        if nick in auth_list:
+            return
+        else:
+            auth_list.append(nick)
+    else:
+        return
+auth_verify.rule = r'(\S+) (ACC) ([0-3])'
 auth_request.priority = 'high'
 
 def auth_check(nick):
+    """
+    Checks if nick is on the auth list and returns true if so
+    """
     global auth_list
     if nick in auth_list:
         return 1

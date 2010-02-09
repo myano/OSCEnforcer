@@ -1,6 +1,6 @@
 nick = 'm5'
 host = 'irc.freenode.net'
-channels = ['#osc_test', '#m5_test']
+channels = ['#osc_test']
 owner = 'al3k'
 
 # This isn't implemented yet:
