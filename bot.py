@@ -58,7 +58,7 @@ class m5(irc.Bot):
             if hasattr(module, 'setup'): 
                module.setup(self)
             self.register(vars(module))
-            modules.append(name)
+            tsmodules.append(name)
 
       if modules: 
          print >> sys.stderr, 'Registered modules:', ', '.join(modules)
