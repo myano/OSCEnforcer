@@ -1,23 +1,23 @@
-#!/usr/bin/env python
+!/usr/bin/env python
 """
 startup.py - Phenny Startup Module
 Copyright 2008, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
 
-http://inamidst.com/phenny/
+http://inamidst.com/m5/
 """
 
-def startup(phenny, input): 
-   if hasattr(phenny.config, 'serverpass'): 
-      phenny.write(('PASS', phenny.config.serverpass))
+def startup(m5, input): 
+   if hasattr(m5.config, 'serverpass'): 
+      m5.write(('PASS', m5.config.serverpass))
 
-   if hasattr(phenny.config, 'password'): 
-      phenny.msg('NickServ', 'IDENTIFY %s' % phenny.config.password)
+   if hasattr(m5.config, 'password'): 
+      m5.msg('NickServ', 'IDENTIFY %s' % m5.config.password)
       __import__('time').sleep(5)
 
    # Cf. http://swhack.com/logs/2005-12-05#T19-32-36
-   for channel in phenny.channels: 
-      phenny.write(('JOIN', channel))
+   for channel in m5.channels: 
+      m5.write(('JOIN', channel))
 startup.rule = r'(.*)'
 startup.event = '251'
 startup.priority = 'low'

@@ -44,7 +44,7 @@ class Bot(asynchat.async_chat):
       self.sending = threading.RLock()
 
    def __write(self, args, text=None): 
-      print '%r %r %r' % (self, args, text)
+       #print '%r %r %r' % (self, args, text)
       try: 
          if text is not None: 
             self.push(' '.join(args) + ' :' + text + '\r\n')

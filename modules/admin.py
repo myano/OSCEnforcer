@@ -4,8 +4,10 @@ admin.py - Phenny Admin Module
 Copyright 2008-9, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
 
-beefed up by Alek Rollyson. added funtions for op, deop, voice, devoice
+beefed up by Alek Rollyson. added functions for op, deop, voice, devoice
 """
+auth_list = []
+admins = m5.config.admins
 
 def join(m5, input): 
    """Join the specified channel. This is an admin-only command."""
@@ -130,6 +132,44 @@ def devoice(m5, input):
         m5.write(['MODE', channel, "-v", nick])
 devoice.rule = (['devoice'], r'(\S+)?')
 devoice.priority = 'low'
+
+def auth_request(m5, input):
+    """
+    This will scan every message in a room for nicks in m5's
+    admin list.  If one is found, it will send an ACC request
+    to NickServ.  May only work with Freenode.
+    """
+    pattern = '(' + '|'.join([re.escape(x) for x in admins]) + ')'
+    matches = re.findall(pattern, input)
+    for x in len(matches):
+        m5.msg('NickServ', 'ACC' % matches(x))
+auth_request.rule = r'.*'
+auth_request.priority = 'high'
+
+def auth_verify(m5, input):
+    """
+    This will wait for notices from NickServ and scan for ACC
+    responses.  This verifies with NickServ that nicks in the room
+    are verified so that they cannot be spoofed.
+    """
+    global auth_list
+    nick = input.group(3)
+    level = input.group(1)
+    if input.admin not 'NickServ'
+        return
+    elif input.group(3) == 0
+        if nick not in auth_list
+            return
+        else
+            
+
+auth_verify.rule = (r'(\S+) (ACC) ([0-3])')
+auth_request.priority = 'high'
+
+def auth_check(nick):
+    global auth_list
+    if nick in auth_list:
+        return 1
 
 if __name__ == '__main__': 
    print __doc__.strip()
