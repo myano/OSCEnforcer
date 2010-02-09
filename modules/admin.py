@@ -71,10 +71,10 @@ def op(m5, input):
     Command to op users in a room. If no nick is given,
     m5 will op the nick who sent the command
     """
-    if not input.admin or not input.senderstartswith('#'):
+    if not input.admin or not input.sender.startswith('#'):
         return
     nick = input.group(2)
-    verify = auth_check(input.nick)
+    verify = auth_check(m5, input.nick, nick)
     if verify:
         if not nick:
             nick = input.nick
@@ -94,7 +94,7 @@ def deop(m5, input):
     if not input.admin or not input.sender.startswith('#'):
         return
     nick = input.group(2)
-    verify = auth_check(input.nick)
+    verify = auth_check(m5, input.nick, nick)
     if verify:
         if not nick:
             nick = input.nick
@@ -114,7 +114,7 @@ def voice(m5, input):
     if not input.admin or not input.sender.startswith('#'):
         return
     nick = input.group(2)
-    verify = auth_check(input.nick)
+    verify = auth_check(m5, input.nick, nick)
     if verify:
         if not nick:
             nick = input.nick
@@ -134,7 +134,7 @@ def devoice(m5, input):
     if not input.admin or not input.sender.startswith('#'):
         return
     nick = input.group(2)
-    verify = auth_check(input.nick)
+    verify = auth_check(m5, input.nick, nick)
     if verify:
         if not nick:
             nick = input.nick
@@ -172,9 +172,6 @@ def auth_verify(m5, input):
     level = input.group(3)
     if input.nick != 'NickServ':
         return
-    elif nick == m5.config.nick:
-        m5.say("nah, i'm good")
-        return
     elif level == '3':
         if nick in auth_list:
             return
@@ -190,12 +187,14 @@ auth_verify.event = 'NOTICE'
 auth_verify.rule = r'(\S+) (ACC) ([0-3])'
 auth_verify.priority = 'high'
 
-def auth_check(nick):
+def auth_check(m5, nick, target):
     """
     Checks if nick is on the auth list and returns true if so
     """
     global auth_list
-    if nick in auth_list:
+    if target == m5.config.nick:
+	return 0
+    elif nick in auth_list:
         return 1
 
 if __name__ == '__main__': 
