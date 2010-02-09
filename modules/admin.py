@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 """
-admin.py - Phenny Admin Module
+admin.py - m5 Admin Module
 Copyright 2008-9, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
 
-beefed up by Alek Rollyson. added functions for op, deop, voice, devoice
+Beefed up by Alek Rollyson. added functions for op, deop, voice, devoice
+Uses NickServ ACC to verify that a nick is identified with services, as well
+as m5's admin list as a double verification system. Should eliminate the possibility 
+of nick spoofing.  May only work with freenode, hasn't been tested on other networks
 """
 import re
 
@@ -106,7 +109,7 @@ deop.priority = 'low'
 def voice(m5, input):
     """
     Command to voice users in a room. If no nick is given,
-    m5 will op the nick who sent the command
+    m5 will voice the nick who sent the command
     """
     if not input.admin:
         return
@@ -126,7 +129,7 @@ voice.priority = 'low'
 def devoice(m5, input):
     """
     Command to devoice users in a room. If no nick is given,
-    m5 will op the nick who sent the command
+    m5 will devoice the nick who sent the command
     """
     if not input.admin:
         return
@@ -161,7 +164,8 @@ def auth_verify(m5, input):
     """
     This will wait for notices from NickServ and scan for ACC
     responses.  This verifies with NickServ that nicks in the room
-    are verified so that they cannot be spoofed.
+    are identified with NickServ so that they cannot be spoofed.
+    May only work with freenode.
     """
     global auth_list
     nick = input.group(1)
