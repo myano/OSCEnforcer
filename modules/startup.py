@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-startup.py - Phenny Startup Module
+startup.py - m5 Startup Module
 Copyright 2008, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
 
