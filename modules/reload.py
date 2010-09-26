@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-reload.py - Phenny Module Reloader Module
+reload.py - m5 Module Reloader Module
 Copyright 2008, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
 
