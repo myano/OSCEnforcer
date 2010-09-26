@@ -194,7 +194,7 @@ def auth_check(m5, nick, target):
     """
     global auth_list
     if target == m5.config.nick:
-	    return 0
+        return 0
     elif nick in auth_list:
         return 1
 
