@@ -5,8 +5,6 @@ Copyright 2008, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
 
 http://inamidst.com/phenny/
-
-Forked by: Michael S. Yanovich, http://opensource.cse.ohio-state.edu/git/yanovich/phenny.git/
 """
 
 import sys, re, time, traceback
