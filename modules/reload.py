@@ -9,24 +9,24 @@ http://inamidst.com/phenny/
 
 import irc
 
-def f_reload(phenny, input): 
+def f_reload(m5, input): 
    """Reloads a module, for use by admins only.""" 
    if not input.admin: return
 
    name = input.group(2)
-   if name == phenny.config.owner: 
-      return phenny.reply('What?')
+   if name == m5.config.owner: 
+      return m5.reply('What?')
 
    if (not name) or (name == '*'): 
-      phenny.setup()
-      return phenny.reply('done')
+      m5.setup()
+      return m5.reply('done')
 
    try: module = getattr(__import__('modules.' + name), name)
    except ImportError: 
       module = getattr(__import__('opt.' + name), name)
    reload(module)
    if hasattr(module, 'setup'): 
-      module.setup(phenny)
+      module.setup(m5)
 
    if hasattr(module, '__file__'): 
       import os.path, time
@@ -34,10 +34,10 @@ def f_reload(phenny, input):
       modified = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(mtime))
    else: modified = 'unknown'
 
-   phenny.register(vars(module))
-   phenny.bind_commands()
+   m5.register(vars(module))
+   m5.bind_commands()
 
-   phenny.reply('%r (version: %s)' % (module, modified))
+   m5.reply('%r (version: %s)' % (module, modified))
 f_reload.name = 'reload'
 f_reload.rule = ('$nick', ['reload'], r'(\S+)?')
 f_reload.priority = 'low'
