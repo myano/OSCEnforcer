@@ -32,9 +32,8 @@ def create_default_config(fn):
    # serverpass = 'yourserverpassword'
 
    # These are people who will be able to use admin.py's functions...
-   admins = [owner, 'someoneyoutrust']
-   # But admin.py is disabled by default, as follows:
-   exclude = ['admin']
+   admins = [owner]
+   exclude = []
 
    # If you want to enumerate a list of modules rather than disabling
    # some, use "enable = ['example']", which takes precedent over exclude
