@@ -188,7 +188,7 @@ auth_verify.event = 'NOTICE'
 auth_verify.rule = r'(\S+) (ACC) ([0-3])'
 auth_verify.priority = 'high'
 
-def auth_check(m5, nick, target):
+def auth_check(m5, nick, target=None):
     """
     Checks if nick is on the auth list and returns true if so
     """
@@ -197,6 +197,20 @@ def auth_check(m5, nick, target):
         return 0
     elif nick in auth_list:
         return 1
+
+def topic(m5, input):
+    """
+    This gives admins the ability to change the topic.
+    """
+    if not input.admin:
+        return
+    topic = str(input.group().split("!topic ")[1])
+    verify = auth_check(m5, input.nick)
+    if verify:
+        channel = input.sender
+        m5.write(['TOPIC', channel, topic])
+topic.commands = ['topic']
+topic.priority = 'high'
 
 if __name__ == '__main__': 
    print __doc__.strip()
