@@ -10,7 +10,7 @@ as m5's admin list as a double verification system. Should eliminate the
 possibility of nick spoofing.  May only work with freenode, hasn't been tested 
 on other networks.
 """
-import re
+import re, time, datetime, calendar 
 
 auth_list = []
 admins = []
@@ -201,16 +201,33 @@ def auth_check(m5, nick, target=None):
 def topic(m5, input):
     """
     This gives admins the ability to change the topic.
+    Note: One does *NOT* have to be an OP, one just has to be on the list of
+    admins.
     """
     if not input.admin:
         return
-    topic = str(input.group().split("!topic ")[1])
-    verify = auth_check(m5, input.nick)
-    if verify:
-        channel = input.sender
-        m5.write(['TOPIC', channel, topic])
+    # If no text is entered fail silently.
+    try:
+        topic = input.group().split("!topic ")[1]
+    except:
+        return
+    #verify = auth_check(m5, input.nick)
+    #if verify:
+    channel = input.sender
+        
+    # Find the next Thursday.
+    today = datetime.date.today()
+    oneday = datetime.timedelta(days=1)
+    thursday = today
+    while thursday.weekday() != calendar.THURSDAY:
+        thursday += oneday
+    date = thursday.strftime("%d-%b-%Y")
+    osu_topic = "Ohio State Open Source Club | 7PM " + str(date) + " Ohio Union Senate Chamber | " + topic
+    text = "topic " + str(channel) + " " + str(osu_topic)
+    m5.write(('PRIVMSG', 'chanserv'), text)
+    #m5.write(('TOPIC', channel, text)) only sends the first word of text.
 topic.commands = ['topic']
-topic.priority = 'high'
+topic.priority = 'low'
 
 if __name__ == '__main__': 
    print __doc__.strip()
