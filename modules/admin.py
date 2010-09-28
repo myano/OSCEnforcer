@@ -211,16 +211,19 @@ def topic(m5, input):
         topic = input.group().split("!topic ")[1]
     except:
         return
+        
     verify = auth_check(m5, input.nick)
     if verify:
         channel = input.sender
         
         # Find the next Thursday.
-        today = datetime.date.today()
+        today = datetime.date.today(days=1)
         oneday = datetime.timedelta(days=1)
         thursday = today
         while thursday.weekday() != calendar.THURSDAY:
             thursday += oneday
+
+        # Pretty print the date and send it over to chanserv    
         date = thursday.strftime("%d-%b-%Y")
         osu_topic = "Ohio State Open Source Club | 7PM " + str(date) + " Ohio Union Senate Chamber | " + topic
         text = "topic " + str(channel) + " " + str(osu_topic)
