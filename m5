@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 """
-m5- An IRC Bot
-Copyright 2008, Sean B. Palmer, inamidst.com
+m5 - An IRC Bot
+Copyright 2008-10, Sean B. Palmer, inamidst.com
 Licensed under the Eiffel Forum License 2.
 
 Originally Called Phenny, forked and renamed to m5 by Alek Rollyson.
 Hacked for admin roles in IRC rooms.  Op, Deop, Kick, flood protection
 etc etc
+
+Forked and renamed from m5 to OSCEnforcer by Michael S. Yanovich.
+As stated earlier this has a super-powerful admin module and is slimmed down
+specifically for the use in the #osu_osc channel.
 """
 
 import sys, os, imp, optparse
@@ -23,7 +27,7 @@ def check_python_version():
 def create_default_config(fn): 
    f = open(fn, 'w')
    print >> f, trim("""\
-   nick = 'm5'
+   nick = 'OSCEnforcer'
    host = 'irc.example.net'
    channels = ['#example', '#test']
    owner = 'yournickname'
