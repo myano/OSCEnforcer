@@ -198,6 +198,18 @@ def auth_check(m5, nick, target=None):
     elif nick in auth_list:
         return 1
 
+def kick(m5, input):
+    if not input.admin:
+        return
+    text = input.group().split()
+    nick = text[2]
+    if nick != m5.config.nick:
+        tmp = text[1] + " " + nick
+        m5.write(['KICK', tmp])
+kick.commands = ['kick']
+kick.priority = 'high'
+
+
 def topic(m5, input):
     """
     This gives admins the ability to change the topic.
