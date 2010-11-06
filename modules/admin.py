@@ -244,5 +244,17 @@ def topic(m5, input):
 topic.commands = ['topic']
 topic.priority = 'low'
 
+def defend_ground (m5, input):
+    """
+    This function auto-re-joins a channel it was in if it is kicked from it.
+    """
+    channel = input.sender
+    text = input.group()
+    if text == m5.config.nick:
+        m5.write(['JOIN'], channel)
+defend_ground.event = 'KICK'
+defend_ground.rule = '.*'
+defend_ground.priority = 'low'
+
 if __name__ == '__main__': 
    print __doc__.strip()
