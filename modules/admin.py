@@ -250,8 +250,7 @@ def defend_ground (m5, input):
     """
     channel = input.sender
     text = input.group()
-    if text == m5.config.nick:
-        m5.write(['JOIN'], channel)
+    m5.write(['JOIN'], channel)
 defend_ground.event = 'KICK'
 defend_ground.rule = '.*'
 defend_ground.priority = 'low'
