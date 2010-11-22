@@ -199,9 +199,9 @@ def auth_check(m5, nick, target=None):
         return 1
 
 def kick(m5, input):
-    if not input.admin:
-        return
+    if not input.admin: return
     text = input.group().split()
+    if len(text) != 3: return
     nick = text[2]
     if nick != m5.config.nick:
         tmp = text[1] + " " + nick
