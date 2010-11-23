@@ -26,8 +26,7 @@ def commands(m5, input):
    names = ', '.join(sorted(m5.doc.iterkeys()))
    m5.say("I am sending you a private message of all my commands!")
    m5.msg(input.nick, 'Commands I recognise: ' + names + '.')
-   m5.msg(input.nick, ("For help, do '%s: help example?' where example is the " + 
-               "name of the command you want help for.") % m5.nick)
+   m5.msg(input.nick, ("For help, do '%s: help example?' where example is the " + "name of the command you want help for.") % m5.nick)
 commands.commands = ['commands']
 commands.priority = 'low'
 

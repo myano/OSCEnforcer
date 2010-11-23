@@ -13,7 +13,6 @@ on other networks.
 import re, time, datetime, calendar 
 
 auth_list = []
-admins = []
 
 def join(m5, input): 
    """Join the specified channel. This is an admin-only command."""
@@ -77,13 +76,10 @@ def op(m5, input):
     nick = input.group(2)
     verify = auth_check(m5, input.nick, nick)
     if verify:
+        channel = input.sender
         if not nick:
             nick = input.nick
-            channel = input.sender
-            m5.write(['MODE', channel, "+o", nick])
-        else:
-            channel = input.sender
-            m5.write(['MODE', channel, "+o", nick])
+        m5.write(['MODE', channel, "+o", nick])
 op.rule = (['op'], r'(\S+)?')
 op.priority = 'low'
 
@@ -97,13 +93,10 @@ def deop(m5, input):
     nick = input.group(2)
     verify = auth_check(m5, input.nick, nick)
     if verify:
+        channel = input.sender
         if not nick:
             nick = input.nick
-            channel = input.sender
-            m5.write(['MODE', channel, "-o", nick])
-        else:
-            channel = input.sender
-            m5.write(['MODE', channel, "-o", nick])
+        m5.write(['MODE', channel, "-o", nick])
 deop.rule = (['deop'], r'(\S+)?')
 deop.priority = 'low'
 
@@ -117,13 +110,10 @@ def voice(m5, input):
     nick = input.group(2)
     verify = auth_check(m5, input.nick, nick)
     if verify:
+        channel = input.sender
         if not nick:
             nick = input.nick
-            channel = input.sender
-            m5.write(['MODE', channel, "+v", nick])
-        else:
-            channel = input.sender
-            m5.write(['MODE', channel, "+v", nick])
+        m5.write(['MODE', channel, "+v", nick])
 voice.rule = (['voice'], r'(\S+)?')
 voice.priority = 'low'
 
@@ -137,13 +127,10 @@ def devoice(m5, input):
     nick = input.group(2)
     verify = auth_check(m5, input.nick, nick)
     if verify:
+        channel = input.sender
         if not nick:
             nick = input.nick
-            channel = input.sender
-            m5.write(['MODE', channel, "-v", nick])
-        else:
-            channel = input.sender
-            m5.write(['MODE', channel, "-v", nick])
+        m5.write(['MODE', channel, "-v", nick])
 devoice.rule = (['devoice'], r'(\S+)?')
 devoice.priority = 'low'
 
@@ -153,12 +140,10 @@ def auth_request(m5, input):
     admin list.  If one is found, it will send an ACC request
     to NickServ.  May only work with Freenode.
     """
-    admins = m5.config.admins
-    pattern = '(' + '|'.join([re.escape(x) for x in admins]) + ')'
-    matches = re.findall(pattern, input)
-    for x in matches:
-        m5.msg('NickServ', 'ACC ' + x)
+    if input.nick in m5.config.admins:
+        m5.msg('NickServ', 'ACC ' + input.nick) 
 auth_request.rule = r'.*'
+#auth_request.commands = ['auth']
 auth_request.priority = 'high'
 
 def auth_verify(m5, input):
@@ -184,6 +169,7 @@ def auth_verify(m5, input):
         else:
             auth_list.remove(nick)
     print auth_list
+    m5.say(unicode(auth_list))
 auth_verify.event = 'NOTICE'
 auth_verify.rule = r'(\S+) (ACC) ([0-3])'
 auth_verify.priority = 'high'
@@ -197,6 +183,30 @@ def auth_check(m5, nick, target=None):
         return 0
     elif nick in auth_list:
         return 1
+
+def deauth(nick):
+    """
+    Remove pepole from the deauth list.
+    """
+    global auth_list
+    if nick in auth_list:
+        a = auth_list.index(nick)
+        del(auth_list[a])
+
+def deauth_quit(m5, input):
+    deauth(input.nick)
+deauth_quit.event = 'QUIT'
+deauth_quit.rule = '.*'
+
+def deauth_part(m5, input):
+    deauth(input.nick)
+deauth_part.event = 'PART'
+deauth_part.rule = '.*'
+
+def deauth_nick(m5, input):
+    deauth(input.nick)
+deauth_nick.event = 'NICK'
+deauth_nick.rule = '.*'
 
 def kick(m5, input):
     if not input.admin: return
@@ -218,42 +228,37 @@ def topic(m5, input):
     """
     if not input.admin:
         return
-    # If no text is entered fail silently.
-    try:
-        topic = input.group().split("!topic ")[1]
-    except:
-        return
-        
+    topic = unicode(input.group(2))
+    
     verify = auth_check(m5, input.nick)
+    m5.say(unicode(verify))
     if verify:
         channel = input.sender
-        
+
         # Find the next Thursday.
-        today = datetime.date.today(days=1)
+        today = datetime.date.today()
         oneday = datetime.timedelta(days=1)
         thursday = today
         while thursday.weekday() != calendar.THURSDAY:
             thursday += oneday
-
+        
         # Pretty print the date and send it over to chanserv    
         date = thursday.strftime("%d-%b-%Y")
-        osu_topic = "Ohio State Open Source Club | 7PM " + str(date) + " Ohio Union Senate Chamber | " + topic
-        text = "topic " + str(channel) + " " + str(osu_topic)
+        osu_topic = "Ohio State Open Source Club | 7PM " + str(date) + " Ohio Union Senate Chamber | Topic: " + topic
+        text = "topic " + str(channel) + " " + str(osu_topic) 
         m5.write(('PRIVMSG', 'chanserv'), text)
-        #m5.write(('TOPIC', channel, text)) only sends the first word of text.
 topic.commands = ['topic']
-topic.priority = 'low'
+topic.priority = 'high'
 
 def defend_ground (m5, input):
     """
     This function auto-re-joins a channel it was in if it is kicked from it.
     """
     channel = input.sender
-    text = input.group()
     m5.write(['JOIN'], channel)
 defend_ground.event = 'KICK'
 defend_ground.rule = '.*'
-defend_ground.priority = 'low'
+defend_ground.priority = 'high'
 
 if __name__ == '__main__': 
    print __doc__.strip()
