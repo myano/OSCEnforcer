@@ -168,8 +168,6 @@ def auth_verify(m5, input):
             return
         else:
             auth_list.remove(nick)
-    print auth_list
-    m5.say(unicode(auth_list))
 auth_verify.event = 'NOTICE'
 auth_verify.rule = r'(\S+) (ACC) ([0-3])'
 auth_verify.priority = 'high'
@@ -231,7 +229,6 @@ def topic(m5, input):
     topic = unicode(input.group(2))
     
     verify = auth_check(m5, input.nick)
-    m5.say(unicode(verify))
     if verify:
         channel = input.sender
 
